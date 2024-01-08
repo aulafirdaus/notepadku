@@ -31,11 +31,16 @@ export default function App() {
     function handleDeleteItem(id){
         setItems((items) => items.filter((item) => item.id !== id));
     }
+
+    function handleToggleItem(id) {
+        setItems((items) => items.map((item) => (item.id === id ? {...item, checked: !item.checked } : item )))
+    }
+
   return (
       <div className="app">
         <Header/>
         <Form onAddItem={handleAddItem}/>
-        <GroceryList items={items} onDeleteItem={handleDeleteItem}/>
+        <GroceryList items={items} onDeleteItem={handleDeleteItem} onToggleItem={handleToggleItem} />
         <Footer/>
     </div>
   )
@@ -78,13 +83,13 @@ function Form({ onAddItem }){
     )
 }
 
-function GroceryList({ items, onDeleteItem }){
+function GroceryList({ items, onDeleteItem, onToggleItem }){
     return (
         <>
             <div className="list">
                 <ul>
                     {items.map((item) => (
-                        <Item item={item} key={item.id} onDeleteItem={onDeleteItem} />
+                        <Item item={item} key={item.id} onDeleteItem={onDeleteItem} onToggleItem={onToggleItem} />
                     ))}
                 </ul>
                 </div>
@@ -100,10 +105,10 @@ function GroceryList({ items, onDeleteItem }){
     )
 }
 
-function Item({ item, onDeleteItem }){
+function Item({ item, onDeleteItem, onToggleItem }){
     return (
         <li key={item.id}>
-            <input type="checkbox" />
+            <input type="checkbox" checked={item.checked} onChange={() => onToggleItem(item.id)} />
             <span style={ item.checked ? { textDecoration: 'line-through' } : {}}>
                 {item.quantity} {item.name}
             </span>
